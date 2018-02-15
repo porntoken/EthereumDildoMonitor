@@ -12,4 +12,4 @@ No unit tests were written as this is a one timer for the $PTWO ICO
 
 * Create a MySQL database called dildo_monitor with username/password as per application.properties
 
-** The dildo_monitor schema will automatically be created, but is also located in resources/database
+* The dildo_monitor schema will automatically be created, but is also located in resources/database
