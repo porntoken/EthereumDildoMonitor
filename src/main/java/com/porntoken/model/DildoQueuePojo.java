@@ -1,5 +1,8 @@
 package com.porntoken.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Christopher Gu
  * @product PornToken $PTWO Live Dildo Crowdfund
@@ -12,7 +15,7 @@ public class DildoQueuePojo {
 	
 	public Integer tokens;
 	
-	public String command;
+	public List<String> commands = new ArrayList<String>();
 	
 	public Integer level;
 	
@@ -35,12 +38,12 @@ public class DildoQueuePojo {
 		this.tokens = tokens;
 	}
 
-	public String getCommand() {
-		return command;
+	public List<String> getCommands() {
+		return commands;
 	}
 
-	public void setCommand(String command) {
-		this.command = command;
+	public void setCommands(List<String> commands) {
+		this.commands = commands;
 	}
 
 	public Integer getLevel() {

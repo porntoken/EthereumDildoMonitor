@@ -1,24 +1,22 @@
 package com.porntoken.services;
 
-/**
- * @author Christopher Gu
- * @product PornToken $PTWO Live Dildo Crowdfund
- * Copyright 2018
- */
+import java.security.cert.X509Certificate;
 
-import java.util.ArrayList;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service("httpActionService")
@@ -30,18 +28,43 @@ public class HttpActionServiceImpl implements HttpActionService {
 		
 		HttpClient httpclient;
 	    HttpGet httpGet;
-	    httpclient = new DefaultHttpClient();
-	    httpGet = new HttpGet(url);
-
-	    HttpResponse response = httpclient.execute(httpGet);
-
+	    
 	    String result = null;
 	    
-	    HttpEntity entity = response.getEntity();
-	    if (entity != null) {
-	        result = IOUtils.toString(entity.getContent());
-	    }
-	    
+		try {
+
+			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+				public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+
+				public void checkClientTrusted(X509Certificate[] certs, String authType) {
+				}
+
+				public void checkServerTrusted(X509Certificate[] certs, String authType) {
+				}
+
+			} };
+			
+
+			SSLContext sslcontext = SSLContext.getInstance("SSL");
+			sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext);
+			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+			
+		    httpGet = new HttpGet(url);
+
+		    HttpResponse response = httpclient.execute(httpGet);
+		    
+		    HttpEntity entity = response.getEntity();
+		    if (entity != null) {
+		        result = IOUtils.toString(entity.getContent());
+		    }
+		} catch (Exception e) {
+			logger.error("HTTP GET FAILED: " + url, e);
+		}
+
 	    return result;
 		
 	}
