@@ -62,6 +62,8 @@ public class DildoBuzzerServiceImpl implements DildoBuzzerService {
 		
 		ProcessedEthTx processedEthTx = null;
 		
+		logger.info("Processing Queue Size: " + dildoActionQueue.size());
+		
 		try {
 			processedEthTx = dildoActionQueue.pop();
 		} catch (NoSuchElementException nse) {
@@ -73,6 +75,8 @@ public class DildoBuzzerServiceImpl implements DildoBuzzerService {
 			logger.info("No more Dildo actions in Queue");
 			return false;
 		}
+		
+		logger.info("Found Queue Item: " + processedEthTx.getTxId());
 		
 		DildoQueuePojo dildoQueuePojo = getDildoQueuePojo(processedEthTx);
 		
